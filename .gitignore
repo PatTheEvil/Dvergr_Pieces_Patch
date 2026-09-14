@@ -1,0 +1,15 @@
+# build output
+/build/
+/dist/
+*.zip
+
+# the original mod assembly is not redistributed here -- supply your own copy
+DvergrPieces.dll
+DvergrPieces.orig.dll
+
+# editor / OS noise
+.vs/
+.idea/
+*.user
+Thumbs.db
+desktop.ini
