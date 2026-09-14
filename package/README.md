@@ -36,20 +36,26 @@ Valheim 1.0 replaced the old category tab bar with a tag-driven menu (`ByUsagePi
 that filters on a new field, `Piece.m_usage`. Prefabs authored before 1.0 have no usage
 tags, so they matched no category and only ever showed under "Show All".
 
-The pieces are now tagged so they appear where you would expect them:
+The pieces are now tagged so they appear where you would expect them. `m_usage` is a flags
+field, so a piece can sit in more than one category — the chests and the shelf are both
+Storage and Furniture, and the pole and beams are both Building and Architecture.
 
-| Menu category | Pieces |
-|---|---|
-| Furniture | bed, table, chair, stool |
-| Lighting | black core torch, lantern, wisp torch |
-| Storage | both chests, shelf |
-| Stairs | both spiral stairs, wooden stairs |
-| Walls | both dvergr walls |
-| Flooring | wooden floor |
-| Building | marble block, pole, both beams |
-| Decor | marble head, vines |
-| Doors and Windows | dvergr door |
-| Crafting | fermenter |
+| Menu category | Pieces | Count |
+|---|---|---|
+| Furniture | bed, table, chair, stool, both chests, shelf | 7 |
+| Stairs | metal spiral (left + right), marble spiral (left + right), wooden stairs | 5 |
+| Building | black marble block, wooden pole, wooden beam, wooden beam 2x1 | 4 |
+| Lighting | black core torch, placeable lantern, wisp torch | 3 |
+| Storage | both chests, shelf | 3 |
+| Architecture | wooden pole, wooden beam, wooden beam 2x1 | 3 |
+| Walls | both dvergr walls | 2 |
+| Decor | marble head, vines | 2 |
+| Flooring | wooden floor | 1 |
+| Doors and Windows | dvergr door | 1 |
+| Crafting | fermenter | 1 |
+
+That is 26 prefabs, covering all 24 pieces the mod advertises — the two spiral staircases
+each ship as a separate left and right prefab.
 
 This replaces the original's custom "Dvergr" category, which 1.0's new menu can no longer
 display.
@@ -78,6 +84,12 @@ sorts it out. If his mod is missing, this one refuses to load rather than misbeh
 Existing worlds, saves and configs are unaffected. His mod keeps its own plugin GUID and
 its own `Tequila.DvergrPieces.cfg`, which this patch does not touch, so everything you have
 already built and every crafting cost you have customised stays exactly as it was.
+
+**On a shared server, install it for everyone.** The build menu fixes are purely visual and
+local, so a mixed server is fine there. The fermenter is not: an unpatched client does not
+know the added brews, and if it is the one that processes the tap, the fermenter empties
+and nothing comes out. Anyone without the patch can still build and use everything the mod
+shipped with — only the newer meads need it.
 
 **If you used `Dvergr_Pieces_Reborn`, remove it.** That package bundled a patched copy of
 his DLL; this one replaces it and is the reason it was deprecated.
