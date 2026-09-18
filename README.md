@@ -19,8 +19,15 @@ or redistributed. This repo holds only the plugin that does the repairing.
 | 1 | `PieceTable.m_availablePieces` changed type in 1.0, so PieceManager's patches threw `MissingFieldException`, then `Hud.UpdateBuild` threw `ArgumentOutOfRangeException` every frame | `src/PieceTableFix.cs` |
 | 2 | 1.0's build menu filters on the new `Piece.m_usage`; pre-1.0 prefabs have no tags, so they only appeared under "Show All" | `src/UsageTags.cs` |
 | 3 | The fermenter refused meads added after 2024 — a bug Tequila noted in 2.9.0 and never fixed | `src/FermenterSync.cs` |
+| 4 | The mod's own "Dvergr" category disappeared, because 1.0's menu no longer takes categories from piece tables | `src/CustomCategory.cs` |
 
 Full detail in [`package/README.md`](package/README.md), which is what ships on Thunderstore.
+
+(4) is not a break so much as a restoration, and it is optional — a config entry turns it
+off. `ByUsagePieceList` fills `m_usageTags` and `m_usageTagDisplayNames` in its constructor
+and the rest of the menu reads only those two arrays, so a category is one appended entry
+each. The bit is allocated from what the array actually holds rather than hardcoded, so it
+will not collide with a category registered by another mod.
 
 ### How the first one works
 

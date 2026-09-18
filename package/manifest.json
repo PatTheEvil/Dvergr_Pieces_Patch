@@ -1,6 +1,6 @@
 {
     "name": "Dvergr_Pieces_Patch",
-    "version_number": "1.0.0",
+    "version_number": "1.1.0",
     "website_url": "https://github.com/PatTheEvil/Dvergr_Pieces_Patch",
     "description": "Makes Tequila's Dvergr Pieces work on Valheim 1.0. Contains none of his files - it installs his mod as a dependency and repairs it in memory at load.",
     "dependencies": [

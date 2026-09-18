@@ -23,6 +23,11 @@ namespace DvergrPiecesPatch
         static void Postfix(ZNetScene __instance)
         {
             if (__instance == null) return;
+            if (!Plugin.FermenterMeads.Value)
+            {
+                Plugin.Log.LogInfo("Fermenter mead sync disabled by config - brew list left as-is");
+                return;
+            }
 
             Fermenter mine = FindFermenter(__instance, ModFermenter);
             if (mine == null) return;

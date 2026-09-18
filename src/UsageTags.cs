@@ -73,9 +73,14 @@ namespace DvergrPiecesPatch
                 if (!Map.TryGetValue(name, out tag)) continue;
 
                 Piece piece = go.GetComponent<Piece>();
-                if (piece == null || piece.m_usage != 0) continue;
+                if (piece == null) continue;
 
-                piece.m_usage = tag;
+                // The custom category, if enabled, rides along as an extra bit, so a
+                // piece shows both under its natural category and under Dvergr.
+                Tag want = tag | CustomCategory.Flag;
+                if ((piece.m_usage & want) == want) continue;
+
+                piece.m_usage |= want;
                 tagged++;
             }
 

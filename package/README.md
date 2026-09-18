@@ -57,8 +57,16 @@ Storage and Furniture, and the pole and beams are both Building and Architecture
 That is 26 prefabs, covering all 24 pieces the mod advertises — the two spiral staircases
 each ship as a separate left and right prefab.
 
-This replaces the original's custom "Dvergr" category, which 1.0's new menu can no longer
-display.
+**All of them also appear together under a "Dvergr" category**, the way the original mod
+had them before 1.0. Because `m_usage` is a flags field, that is an extra bit rather than a
+move: the bed is under Furniture *and* under Dvergr. It can be turned off — see
+Configuration.
+
+`ByUsagePieceList` builds its tag list into two instance arrays at construction, and the
+rest of the menu reads only those, so the category is added by appending one entry to each
+— no change to the enum and nothing patched in the BCL. The bit is picked from what the
+array actually holds rather than hardcoded, so a category added by another mod (Jötunn can
+do this since 2.30.1) will not collide with it.
 
 ### 3. The fermenter did not accept newer meads
 
@@ -85,14 +93,56 @@ Existing worlds, saves and configs are unaffected. His mod keeps its own plugin 
 its own `Tequila.DvergrPieces.cfg`, which this patch does not touch, so everything you have
 already built and every crafting cost you have customised stays exactly as it was.
 
-**On a shared server, install it for everyone.** The build menu fixes are purely visual and
-local, so a mixed server is fine there. The fermenter is not: an unpatched client does not
-know the added brews, and if it is the one that processes the tap, the fermenter empties
-and nothing comes out. Anyone without the patch can still build and use everything the mod
-shipped with — only the newer meads need it.
-
 **If you used `Dvergr_Pieces_Reborn`, remove it.** That package bundled a patched copy of
 his DLL; this one replaces it and is the reason it was deprecated.
+
+### On a server, everyone needs it — including the server itself
+
+> **In short:** if even one person on your server is missing the patch, a newer mead can be
+> destroyed when the Dvergr fermenter is tapped — including one you brewed yourself, on
+> your own fermenter, with the patch installed. Either put it on every client and the
+> server, or set `Fermenter meads = false`. Nothing else in the mod is affected.
+
+| Where | Needed? | Why |
+|---|---|---|
+| Every player | **yes** | any of them can be the one that processes a tap |
+| The dedicated server | **yes** | it can own the fermenter when no player has claimed it |
+
+The build menu fixes are purely local and cosmetic, so a player without the patch just sees
+the pieces the way 1.0 left them. The fermenter is the part that matters, and the reason it
+is not enough to have the patch yourself is worth spelling out.
+
+`Fermenter.Interact` sends `RPC_Tap` to whoever **owns the fermenter's ZDO**, and does not
+claim ownership first. `RPC_Tap` clears the stored contents immediately and schedules
+`DelayedTap`, which spawns nothing at all if its own copy of the brew list does not know
+the item. So if the peer that owns that fermenter lacks the patch, tapping a newer mead
+destroys it silently — the animation plays and nothing comes out.
+
+The owner is not who built it, and not necessarily who clicked it. `ZDOMan` hands ownership
+to a peer that has the object in its active area, and only reassigns it once the current
+owner leaves — so ownership is sticky. A second player standing at your fermenter can be
+the one who processes your tap, and a dedicated server can own it when no player has
+claimed it. Having the patch yourself is therefore not enough.
+
+This mismatch is one the patch itself creates: before it, nobody could ferment those meads,
+so nobody could lose one. **If you cannot get it onto every client and the server, set
+`Fermenter meads = false`** (see Configuration below). That leaves the fermenter exactly as
+Tequila shipped it, removes the risk entirely, and the build menu fixes keep working.
+
+---
+
+## Configuration
+
+`BepInEx/config/PatTheEvil.DvergrPiecesPatch.cfg`, created on first run. Both settings take
+effect after a restart.
+
+| Setting | Default | What it does |
+|---|---|---|
+| `Dvergr category` | `true` | Adds a **Dvergr** category to the build menu listing every piece of the mod. Purely cosmetic and purely local — it does not have to match between players. Turn it off to have the pieces only in the vanilla categories. |
+| `Fermenter meads` | `true` | Lets the Dvergr fermenter accept every mead the vanilla fermenter does. **Turn it off on a server where not everyone has the patch** — see above. |
+
+Tequila's own config, `Tequila.DvergrPieces.cfg`, is separate and untouched. Crafting costs,
+stations and piece categories still live there.
 
 ---
 

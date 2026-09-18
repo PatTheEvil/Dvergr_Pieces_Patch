@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.0
+
+- The pieces now also appear together under a **Dvergr** category in the build menu, the
+  way the original mod had them before Valheim 1.0. It is an extra tag rather than a move,
+  so each piece still shows under its vanilla category as well.
+- Added a config option, `Dvergr category`, to turn that off.
+- Added a config option, `Fermenter meads`, to turn the fermenter brew sync off. On a
+  server where not everyone has the patch, an unpatched client cannot tap a newer mead and
+  tapping destroys it - a mismatch this patch is what creates, so there is now a way out of
+  it that does not mean uninstalling.
+
 ## 1.0.0
 
 First release of the patch.
