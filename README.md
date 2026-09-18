@@ -49,6 +49,38 @@ its custom category exist — is left alone.
 
 ---
 
+## Configuration
+
+`BepInEx/config/PatTheEvil.DvergrPiecesPatch.cfg`, created on first run. Both take effect
+after a restart.
+
+| Setting | Default | Effect |
+|---|---|---|
+| `Dvergr category` | `true` | Adds the **Dvergr** category to the build menu. Cosmetic and local; does not have to match between players. |
+| `Fermenter meads` | `true` | Lets the Dvergr fermenter accept every mead the vanilla fermenter does. **Turn it off on a server where not everyone has the patch.** |
+
+### Everyone on a server needs this, the dedicated server included
+
+The build menu fixes are local and cosmetic, so a mixed server is fine there. The fermenter
+is not.
+
+`Fermenter.Interact` sends `RPC_Tap` to whoever owns the fermenter's ZDO without claiming
+ownership first. `RPC_Tap` clears the stored contents immediately and schedules
+`DelayedTap`, which spawns nothing when `GetItemConversion` finds no match — so if the peer
+that owns the fermenter lacks the patch, tapping a newer mead destroys it silently.
+
+Ownership is not who built it and not necessarily who clicked it: `ZDOMan` gives it to a
+peer that has the object in its active area and only reassigns once that peer leaves, and a
+dedicated server can hold it. So a second player standing at your fermenter can be the one
+who processes your tap, which means having the patch yourself is not enough.
+
+This mismatch is one the patch creates — before it nobody could ferment those meads, so
+nobody could lose one. `Fermenter meads = false` removes the risk entirely and leaves the
+build menu fixes working. [`package/README.md`](package/README.md) says the same at more
+length, for players.
+
+---
+
 ## Building
 
 Requirements: Windows, Valheim installed, BepInEx installed in any mod manager profile (the
